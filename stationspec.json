@@ -1,0 +1,13 @@
+{
+    "lband": {
+            "patterns": {
+                    "cmd::default": "/home/hugo/workspace/beams/$(stype).holo.lband.2deg_$(corr)_$(reim).fits",
+                    "unitybeam": "/home/hugo/workspace/beams/unity.holo.lband.2deg_$(corr)_$(reim).fits"
+            },
+            "define-stationtypes": {
+                    "cmd::default": "mk",
+                    "m000": "unitybeam",
+                    "m060": "unitybeam"
+            }
+    }
+}
