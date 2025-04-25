@@ -20,6 +20,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     wget && \
     apt clean all && \
     apt autoremove
+RUN pip install simms eidos jupyterlab
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV PATH=/usr/local/bin:$PATH
