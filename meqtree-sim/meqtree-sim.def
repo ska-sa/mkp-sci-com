@@ -1,0 +1,87 @@
+Bootstrap: docker
+From: kernsuite/base:5
+
+%post
+    # Update package list and install system packages
+    apt-get update
+    apt-get install -y \
+        casacore-dev \
+        casacore-tools \
+        casarest \
+        python3-pip \
+        python3-pyfits \
+        python3-numpy \
+        python3-scipy \
+        python3-astlib \
+        python3-casacore \
+        libqdbm-dev \
+        build-essential \
+        cmake \
+        libblitz0-dev \
+        binutils-dev \
+        makems \
+        wget
+
+    pip3 install -U pip setuptools wheel
+
+    # Install latest masters
+    echo "deb-src http://ppa.launchpad.net/kernsuite/kern-5/ubuntu bionic main" > /etc/apt/sources.list.d/kernsuite-ubuntu-kern-4-bionic.list
+    apt-get update
+    apt-get build-dep -y meqtrees-timba meqtrees-cattery
+    apt-get install -y python-qt4 python-qwt5-qt4 git
+    
+    # Clean up apt cache and unnecessary packages to reduce image size
+    apt-get autoremove -y
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+    
+    # Create build directory
+    mkdir -p /opt/src/meqtrees
+    BUILD=/opt/src/meqtrees
+    cd $BUILD
+
+    # Clone repositories
+    git clone https://github.com/ratt-ru/meqtrees-timba
+    git clone https://github.com/ratt-ru/meqtrees-cattery
+    git clone https://github.com/ratt-ru/kittens 
+    git clone https://github.com/ratt-ru/purr
+    git clone https://github.com/ratt-ru/tigger 
+    git clone https://github.com/ratt-ru/owlcat 
+
+    # Build Timba
+    mkdir meqtrees-timba/build
+    cd $BUILD/meqtrees-timba
+    Tools/Build/bootstrap_cmake release
+    cd $BUILD/meqtrees-timba/build/release
+    make -j16 && make install
+
+    # Install python modules
+    cd $BUILD/meqtrees-cattery && pip install . 
+    cd $BUILD/kittens && pip install .
+    cd $BUILD/purr && pip install .
+    cd $BUILD/tigger && pip install .
+    cd $BUILD/owlcat && pip install .
+
+    # Update linker config
+    ldconfig
+
+%environment
+    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/bin:$PATH
+
+%runscript
+    exec meqtree-pipeliner.py "$@"
+
+%help
+    This is a Singularity container for MeqTrees simulation software.
+    
+    Usage:
+    singularity run meqtree-sim.sif [arguments]
+    
+    By default, it runs meqtree-pipeliner.py with the provided arguments.
+    Use --help to see available options.
+
+%labels
+    Author Piyanat Kittiwisit
+    Version 1.0
+    Description MeqTrees simulation environment
