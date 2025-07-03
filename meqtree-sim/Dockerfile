@@ -9,6 +9,7 @@ RUN docker-apt-install \
     python3-scipy \
     python3-astlib \
     python3-casacore \
+    python3-pyqt4 \
     libqdbm-dev \
     build-essential \
     cmake \
@@ -19,7 +20,7 @@ RUN docker-apt-install \
 RUN docker-apt-install \
     wget
 
-RUN pip3 install -U pip setuptools wheel
+RUN pip3 install -U pip setuptools wheel sip
 
 ################################
 # install latest masters
@@ -36,6 +37,7 @@ WORKDIR $BUILD
 WORKDIR $BUILD
 RUN git clone https://github.com/ratt-ru/meqtrees-timba
 RUN git clone https://github.com/ratt-ru/meqtrees-cattery
+RUN git clone https://github.com/ratt-ru/meqtrees-frontend
 RUN git clone https://github.com/ratt-ru/kittens 
 RUN git clone https://github.com/ratt-ru/purr
 RUN git clone https://github.com/ratt-ru/tigger 
@@ -53,6 +55,7 @@ RUN cd meqtrees-timba/build/release && make -j16 && make install
 
 # Install python modules
 RUN cd meqtrees-cattery && pip install . 
+RUN cd meqtrees-frontend && pip install .
 RUN cd kittens && pip install .
 RUN cd purr && pip install .
 RUN cd tigger && pip install .
@@ -78,5 +81,5 @@ RUN ldconfig # update the linker config
 # WORKDIR /usr/local/lib/python2.7/dist-packages/Pyxis/recipies/meqtrees-batch-test
 # RUN python -m "nose"
 
-ENTRYPOINT ["meqtree-pipeliner.py"]
-CMD ["--help"]
+ENTRYPOINT ["meqbrowser.py"]
+# CMD ["--help"] 
