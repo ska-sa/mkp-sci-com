@@ -1,0 +1,16 @@
+doc = True # write docx file
+basedir = '/data/mohan/' # where all the action happens
+ring_nmax = 10 # plot 10 worst offenders for 2-chan and 2-dump ringing
+ring_win = 31 # window length for detrending for 2-chan/dump ringing
+fft_win = 51 # window length for detrending for FFT to detect periodicities
+fft_thresh = 10.0 # threshold in FFT for detecting true periodicities
+fft_flag = 10 # flag the first fft_flag indices in (shifted) fft before looking for peaks
+fft_nmax = 15 # plot the fft_nmax highest peaks in FFT
+detrend_win = 51 # detrend each individual spectrum, used by many routines
+cc_thresh = 3.0 # threshold for flagging each scan averaged spectrum before doing X-Y corr coeff
+cc_minlen = 10 # minimum length of flagged scan averaged spectra for passing to X-Y corr coeff
+comb_mnn = 2 # minimum value of fold for comb analysis
+comb_nmax = 100 # maximum value of fold for comb analysis
+comb_nsearch = 1 # number of cycles to 'clean' the comb output of fold,start
+comb_minfold = 5 # go down to minfold while cleaning effects of all factors of fold of peak in comb
+comb_thresh = 5.0 # threshold for SNR 
