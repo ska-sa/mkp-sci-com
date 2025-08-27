@@ -1,0 +1,17 @@
+docalib=True
+bx=None
+ex=None
+flatten=True
+boxsize=50
+thresh1=3.0
+threshneg=-4.0
+maxdm=100
+minsnr=20
+niter=3
+doabs=False
+robust=False
+peaksnr=10.0
+sidesnr=3.0
+dmdiff=3
+doflag=True
+doplot=False
