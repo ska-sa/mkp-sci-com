@@ -1,0 +1,75 @@
+
+# Enable/disable different simulation components?
+me.d_enable = 0
+me.e_advanced = 0
+me.e_enable = 1
+me.e_module = Siamese_OMS_pybeams_fits
+me.epe_enable = 1
+me.g_enable = 0
+me.ip_enable = 0
+me.l_enable = 0
+me.ncorr_enable = 0
+me.p_enable = 0
+
+# Different type of sky models?
+me.sky.siamese_agw_azel_sky = 0
+me.sky.siamese_oms_fitsimage_sky = 0
+me.sky.siamese_oms_gridded_sky = 0
+me.sky.siamese_oms_transient_sky = 0
+me.sky.tiggerskymodel = 1
+me.use_jones_inspectors = 1
+me.use_skyjones_visualizers = 0
+me.use_smearing = 0
+me.z_enable = 0
+
+# Measurementset parameters
+ms_sel.ms_corr_sel = 2
+ms_sel.ms_ifr_subset_str = all
+ms_sel.ms_taql_str = None
+ms_sel.msname = workspace/msdir/1491291289.1GC.ms
+ms_sel.output_column = DATA
+ms_sel.select_channels = 0
+ms_sel.tile_size = 3
+
+# Noise parameters
+noise_from_sefd = 1
+noise_sefd = 425.0
+noise_sefd_bw_khz = 208.0
+noise_sefd_integration = 8.0
+noise_stddev = 0.329467263753
+
+# Pointing parameters
+oms_pointing_errors.pe_l.error_model = SineError
+oms_pointing_errors.pe_l.max_period = 2
+oms_pointing_errors.pe_l.maxerr = 60.0
+oms_pointing_errors.pe_l.min_period = 1
+oms_pointing_errors.pe_m.error_model = SineError
+oms_pointing_errors.pe_m.max_period = 2
+oms_pointing_errors.pe_m.maxerr = 60.0
+oms_pointing_errors.pe_m.min_period = 1
+oms_pointing_errors.station_subset = all
+
+
+pybeams_fits.ampl_interpolation = 0
+pybeams_fits.beam_type = 2x2
+pybeams_fits.filename_pattern = /home/hugo/workspace/input/meerkat_pb_jones_cube_95channels_$(xy)_$(reim).fits
+pybeams_fits.l_axis = X
+pybeams_fits.l_beam_offset = 0.0
+pybeams_fits.m_axis = Y
+pybeams_fits.m_beam_offset = 0.0
+pybeams_fits.missing_is_null = 1
+pybeams_fits.normalize_gains = 0
+pybeams_fits.sky_rotation = 1
+pybeams_fits.spline_order = 3
+pybeams_fits.verbose_level = None
+random_seed = time
+read_ms_model = 0
+run_purr = 0
+sim_mode = sim only
+tensormeqmaker.psv_class = PSVTensor
+tiggerlsm.filename = workspace/input/DEEP2_tagged.lsm.html
+tiggerlsm.lsm_subset = all
+tiggerlsm.null_subset = None
+tiggerlsm.solvable_sources = 0
+uvw_refant = default
+uvw_source = from MS

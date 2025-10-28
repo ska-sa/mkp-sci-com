@@ -1,2 +1,0 @@
-#format: ra_h ra_m ra_s dec_d dec_m dec_s i freq0 spi
-04 13 26.400000 -81 0 0 1 1e6 0.0

@@ -1,0 +1,2 @@
+#format: ra_h ra_m ra_s dec_d dec_m dec_s stokes_i_jy freq0 spi
+04 00 00.0 -33 00 00.0 1 3e9 0.0
