@@ -93,3 +93,13 @@ Q: _Is there a standard for the beamfits format?_
   * Will also try to run MeqTree interactively via Ubuntu virtual machine just to see what is going on.
 * Several details w.r.t. how to define parameters in the TDL script needs to be looked into.
 
+## MeerKAT Holography Beam
+https://archive-gw-1.kat.ac.za/public/repository/10.48479/wdb0-h061/index.html
+This must be converted into the complex voltage beams format
+
+## MeerKAT+ Holography Beam
+This also must be converted.
+
+## Sky Model
+`simms` can only make MS with one field (one RA, Dec field center)
+But sky models can have many sources around that fields
