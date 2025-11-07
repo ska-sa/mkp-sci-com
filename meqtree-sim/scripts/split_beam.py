@@ -47,9 +47,9 @@ def split_beam(
     # Change CTYPE value PX--SSN and PY--SSN to just PX an PY as expected by meqtree
     for key in header.keys():
         if header[key] == 'PX---SSN':
-            header[key] = 'PX'
+            header[key] = 'px'
         if header[key] == 'PY---SSN':
-            header[key] = 'PY'
+            header[key] = 'py'
 
     # Axis 4 and 5 are STOKES and COMPLEX
     # Get and delete keys associated with them
