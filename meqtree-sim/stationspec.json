@@ -1,8 +1,8 @@
 {
     "lband": {
             "patterns": {
-                    "cmd::default": "beam_models/$(stype).eidos.holo.lband.1391MHz.4deg_$(corr)_$(reim).fits",
-                    "unitybeam": "beam_models/$(stype).holo.lband.1391MHz.$(corr)_$(reim).fits"
+                    "cmd::default": "beam_models/$(stype).eidos.lband.1300MHz.4deg_$(corr)_$(reim).fits",
+                    "mkp": "beam_models/mkp.holo.lband.1290MHz.$(corr)_$(reim).fits"
             },
             "define-stationtypes": {
                     "cmd::default": "mk",
@@ -18,7 +18,7 @@
                     "e116": "mkp",
                     "e118": "mkp",
                     "e119": "mkp",
-                    "e121": "mkp",
+                    "e121": "mkp"
             }
     }
 }
