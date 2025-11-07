@@ -1,1 +1,6 @@
 *.ms/
+*.fits
+*.log
+*.npz
+stimela.*
+log-stimela.txt
