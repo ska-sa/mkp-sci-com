@@ -28,7 +28,7 @@ def split_beam(
     beam_file: str | path
         Beam file in fits format
     freq_range: (float, float), optional
-        Frequency range to split the beam in Hz. Default None will keep all frequencies.
+        Frequency range to split the beam in MHz. Default None will keep all frequencies.
     prefix: str, optional
         Prefix of the output file. Use stem of beam_file if None
 
@@ -44,6 +44,13 @@ def split_beam(
         data = hdul[0].data
 
     # Update header
+    # Change CTYPE value PX--SSN and PY--SSN to just PX an PY as expected by meqtree
+    for key in header.keys():
+        if header[key] == 'PX---SSN':
+            header[key] = 'PX'
+        if header[key] == 'PY---SSN':
+            header[key] = 'PY'
+
     # Axis 4 and 5 are STOKES and COMPLEX
     # Get and delete keys associated with them
     keys_with_4_or_5 = [key for key in header.keys() if "4" in key or "5" in key]
@@ -61,7 +68,7 @@ def split_beam(
 
         # Determine indices to select from
         freq_inds = np.where(
-            np.logical_and(freqs > freq_range[0], freqs < freq_range[1])
+            np.logical_and(freqs > freq_range[0] * 1e6, freqs < freq_range[1] * 1e6)
         )[0]
         print(f"Selecting frequencies: {freqs[freq_inds]}")
 
