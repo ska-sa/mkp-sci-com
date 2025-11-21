@@ -3,4 +3,4 @@
 *.log
 *.npz
 stimela.*
-log-stimela.txt
+log*.txt
