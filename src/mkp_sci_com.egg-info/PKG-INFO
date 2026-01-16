@@ -1,7 +1,22 @@
+Metadata-Version: 2.4
+Name: mkp-sci-com
+Version: 0.0.0
+Summary: MKP science components (includes sim)
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: stimela
+Requires-Dist: cult-cargo
+Requires-Dist: simms
+Requires-Dist: eidos
+Requires-Dist: casaconfig
+Requires-Dist: casadata
+Requires-Dist: casatasks
+Requires-Dist: casatools
+
 # mkp-sci-com
 MeerKAT+  Science Commissioning
 
-Quick usage: import the simulation helpers with `from mkp_sci_com import sim`.
+Quick usage: import the simulation helpers with `from mkp_sci_com import sim as mkpsim`.
 
 **Useful Links** 
 

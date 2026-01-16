@@ -1,7 +1,9 @@
-def test_import_mkpsim():
+def test_import_sim():
     import importlib
     mkp = importlib.import_module('mkp_sci_com')
-    assert hasattr(mkp, 'mkpsim')
-    mkpsim = mkp.mkpsim
+    # sim should be exposed, mkpsim alias should not be present at package level
+    assert hasattr(mkp, 'sim')
+    assert not hasattr(mkp, 'mkpsim')
+    sim = mkp.sim
     # ensure the sim package can be imported and has expected attributes
-    assert mkpsim.__name__ == 'mkp_sci_com.sim'
+    assert sim.__name__ == 'mkp_sci_com.sim'

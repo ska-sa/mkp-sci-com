@@ -1,5 +1,6 @@
 """Top-level package for mkp_sci_com."""
-# Expose sim as mkpsim: from mkp_sci_com import sim as mkpsim
-from . import sim as mkpsim  # noqa: F401
+# The package exposes subpackages directly. Users can import the simulation
+# helpers with `from mkp_sci_com import sim`.
+from . import sim  # noqa: F401
 
-__all__ = ["mkpsim"]
+__all__ = ["sim"]
