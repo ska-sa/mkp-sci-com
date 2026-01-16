@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkp-sci-com"
+version = "0.0.0"
+description = "MKP science components (includes sim)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "stimela",
+    "cult-cargo",
+    "simms",
+    "eidos",
+    "casaconfig",
+    "casadata",
+    "casatasks",
+    "casatools",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
