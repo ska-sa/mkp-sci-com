@@ -210,7 +210,9 @@ cabs:
     split-beam:
         info: Split holography beam into 8 complex voltage beams
         name: split-beam
-        command: python scripts/split_beam.py
+        command: mkp_sci_com.utils.split_beam
+        flavour:
+            kind: python
         policies:
             prefix: "--"
         inputs:
