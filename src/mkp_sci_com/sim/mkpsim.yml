@@ -2,7 +2,7 @@ _include:
     - (cultcargo)wsclean.yml
     - (cultcargo)meqtree-pipeliner.yml
 
-mkplus-sim:
+mkpsim:
     info: Stimela recipe for MeerKAT+ simulation
     inputs:
         outdir:

@@ -16,7 +16,7 @@ Requires-Dist: casatools
 # mkp-sci-com
 MeerKAT+  Science Commissioning
 
-Quick usage: import the simulation helpers with `from mkp_sci_com import sim as mkpsim`.
+Quick usage: import the simulation helpers with `from mkp_sci_com import sim`.
 
 **Useful Links** 
 
@@ -27,7 +27,27 @@ Quick usage: import the simulation helpers with `from mkp_sci_com import sim as 
 [MeerKAT+ 'example' Beam models](https://drive.google.com/drive/folders/1otR21f4uGo2WUBH5HmudoNO142TRpnpX?usp=sharing) These are simplified models of the beam for simulation use.
 
 
+## Mock Data Simulation with MeqTrees
 
+Simulate the MeerKAT+ heterogeneous array using MeqTrees and beam models derived from holography measurements. This repository includes configuration files, sky models and helper scripts to produce visibility data for calibration and testing.
+
+### Running meqtree-pipeliner through Stimela
+
+```bash
+stimela run recipe.yml mkplus-sim outdir=test2 skymodel=sky_models/single_point.txt config=configs/meqtree_config.tdl stationspec=configs/stationspec_hetero.json imsize=512 imscale=1asec
+```
+
+### Simulation configuration & components
+
+- **Defining heterogeneous array:** Use the provided `configs/stationspec_*.json` and `data/` files to describe the array layout and element positions.
+- **Beam models:** Beam fits and analytic models can be supplied; holography-derived beams are included for experimentation.
+- **Sky model:** Catalog-style sky models are provided in `sky_models/` (see format notes in the sim docs). Note: `simms` generates MS with a single field center; multi-source catalogs are supported for sky models.
+- **Data container:** MeqTrees works with Measurement Sets (MS); an appropriately shaped empty MS is required for the TDL scripts.
+
+### Progress & notes
+
+- 2025-02-13: Successfully built a Docker image for batch-mode MeqTrees execution. Consultations ongoing on config details.
+- 2025-01-31: Initial repo setup and Docker image testing; ran into an issue with GUI/Qt when running entrypoint non-interactively.
 
 **This is the repository for the scripts and reduction configeration files for the MeerKAT+ Science Commissioning.**
 
