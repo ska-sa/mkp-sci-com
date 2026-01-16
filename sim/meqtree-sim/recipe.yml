@@ -1,0 +1,239 @@
+_include:
+    - (cultcargo)wsclean.yml
+    - (cultcargo)meqtree-pipeliner.yml
+
+mkplus-sim:
+    info: Stimela recipe for MeerKAT+ simulation
+    inputs:
+        outdir:
+            info: Output directory. Will be created if not exist
+            dtype: str
+            required: true
+        skymodel:
+            info: Source catalog file
+            dtype: File
+            required: true
+        prefix:
+            info: Prefix of the output files
+            dtype: str
+            default: mkp.sim
+        primary-beam-enable:
+            info: Apply primary beam to sky model
+            dtype: bool
+            default: true
+        stationspec:
+            info: meqtree stationspec JSON file
+            dtype: File
+        config:
+            info: meqtree configuration file
+            dtype: File
+        direction:
+            info: Pointing direction. Example J2000,0h0m0s,-30d0m0d.
+            dtype: str
+            default: J2000,04h00m00.0s,-33d00m00s
+        freq-start:
+            info: Start frequency in MHz
+            dtype: float
+            default: 1300
+        freq-end:
+            info: End frequency in MHz
+            dtype: float
+            default: 1320
+        channel-width:
+            info: Channel width in MHz
+            dtype: float
+            default: 0.208984
+        duration:
+            info: Observation duration hours. Default is 0.1
+            dtype: float
+            default: 0.1
+        integration:
+            info: Integration time in seconds. Default is 8
+            dtype: float
+            default: 8.0
+        imsize:
+            info: Size of the quick image
+            dtype: int
+            default: 1024
+        imscale:
+            info: Resolution of the quick image
+            dtype: str
+            default: 0.01deg
+    assign:
+        nchannel: =(recipe.freq-end - recipe.freq-start) // recipe.channel-width
+        ms: '{recipe.outdir}/{recipe.prefix}.{recipe.duration:0.1f}h.{recipe.integration:.1f}s.ms'
+        log.dir: '{recipe.outdir}/logs/log-{config.run.datetime}'          # put logs into output dir
+    steps:
+        make-meerkat-beam:
+            info: Make MeerKAT beam models with eidos
+            cab: eidos
+            params:
+                prefix: 'beam_models/mk.eidos.lband'
+                freq: =LIST(recipe.freq-start, recipe.freq-end, recipe.channel-width)
+        split-mkp-beam:
+            info: Split MeerKAT+ holographic beam into 8 complex voltage beams
+            cab: split-beam
+            params:
+                outdir: 'beam_models'
+        create-empty-ms:
+            info:  Make an empty measurement set with simms
+            cab: simms
+            params:
+                direction: =recipe.direction
+                name: =recipe.ms
+                synthesis-time: =recipe.duration
+                dtime: =recipe.integration
+                nchan: =recipe.nchannel
+                freq0: '{recipe.freq-start}MHz'
+                dfreq: '{recipe.channel-width}MHz'
+        simulate-vis:
+            info: Simulate visibility with meqtree-pipeliner
+            cab: meqsim
+            params:
+                ms: =recipe.ms
+                skymodel: =recipe.skymodel
+                config: =IFSET(recipe.config)
+                column: CORRECTED_DATA
+                primary-beam-enable: =recipe.primary-beam-enable
+                primary-beam-pa-rotation: =IFSET(recipe.primary-beam-enable, true, false)
+                primary-beam-path-pattern: =IFSET(recipe.stationspec)
+                primary-beam-l-axis: px                                                                                                                                         
+                primary-beam-m-axis: py
+        quick-image:
+            info: Make quick image with wsclean
+            cab: wsclean
+            params:
+                ms: =recipe.ms
+                prefix: '{recipe.outdir}/{recipe.prefix}'
+                size: =recipe.imsize
+                scale: =recipe.imscale
+                niter: 1
+                column: CORRECTED_DATA
+
+
+opts:
+    backend:
+        select:
+            - native
+            - singularity
+        native:
+            virtual_env: ~/venv/mkpsim
+
+
+cabs:
+    simms:
+        info: Create an empty measurement set with simms (https://github.com/ratt-ru/simms)
+        name: simms
+        command: simms
+        policies:
+            prefix: "--"
+        inputs:
+            direction:
+                info: Pointing direction. Example J2000,0h0m0s,-30d0m0d.
+                dtype: str
+            freq0:
+                info:  Start frequency with unit, e.g. 800MHz
+                dtype: str
+            dfreq:
+                info: Channel width with unit, e.g. 208k.984kHz.
+                dtype: str
+            synthesis-time:
+                info: Synthesis time in hours. Default is 0.1
+                dtype: float
+                default: 0.1
+            dtime:
+                info: Integration time in seconds. Default is 8
+                dtype: float
+                default: 8.0
+            nchan:
+                info: Number of frequency channels. Default is 5
+                dtype: int
+                default: 5
+            pol:
+                info: Polarization. Default is XX XY YX YY
+                dtype: str
+                default: XX XY YX YY
+            type:
+                info: position list type
+                dtype: str
+                choices: [ascii, casa]
+                default: ascii
+            coord-sys:
+                info: 
+                    Only relevent when --type=ascii. Coordinate system of antenna positions. 
+                    Default is itrf.
+                dtype: str
+                choices: [itrf, enu, wgs84]
+                default: itrf
+            tel:
+                info: Telescope name. Required by CASA for lat/lon info, so using MeerKAT
+                dtype: str
+                default: meerkat
+            pos:
+                info: Antenna position file
+                dtype: str
+                policies:
+                    positional: true
+                default: data/meerkat_plus.itrf.txt
+            name:
+                info: MS name. A name based on the observatoion will be generated otherwise.
+                dtype: str
+    eidos:
+        info: 
+            Generate MeerKAT primary beam model, specially defaulting to output
+            8 complex voltage beams for meqtree simulation.
+        name: eidos 
+        command: eidos
+        policies:
+            prefix: "--"
+        inputs:
+            prefix:
+                info: prefix of the output beam files (including path)
+                dtype: str
+            freq:
+                info: Start, end freqs, and channel width in MHz
+                dtype: List[float]
+                policies:
+                    repeat: list
+            pixels:
+                info: Number of pixels on one side of the beam map
+                dtype: int
+                default: 256
+            diameter:
+                info: Angular diameter of the beam in degree
+                dtype: float
+                default: 5
+            output-eight:
+                info: Output 8 complex voltage beam files
+                dtype: bool
+                default: true
+    split-beam:
+        info: Split holography beam into 8 complex voltage beams
+        name: split-beam
+        command: python scripts/split_beam.py
+        policies:
+            prefix: "--"
+        inputs:
+            outdir:
+                dtype: str
+            prefix:
+                dtype: str
+                default: mkp.holo.lband
+            beam_file:
+                dtype: File
+                default: data/MK+L_sym.fits
+                policies:
+                    positional: true
+    meqsim:
+        backend:
+            select:
+                singularity
+            singularity:
+                auto_build: true
+    wsclean:
+        backend:
+            select:
+                singularity
+            singularity:
+                auto_build: true
+            
