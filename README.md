@@ -1,6 +1,8 @@
 # mkp-sci-com
 MeerKAT+  Science Commissioning
 
+Quick usage: import the simulation helpers with `from mkp_sci_com import sim as mkpsim`.
+
 **Useful Links** 
 
 [MeerKAT Plus website](http://meerkatplus.tel)
