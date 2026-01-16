@@ -59,6 +59,11 @@ mkpsim:
             info: Resolution of the quick image
             dtype: str
             default: 0.01deg
+        beam-file:
+            info: Holography beam FITS file (user-provided). If unspecified, defaults to repository data file under the recipe directory.
+            dtype: File
+            default: '{recipe.dir.base}/data/MK+L_sym.fits'
+            must_exist: false
     assign:
         nchannel: =(recipe.freq-end - recipe.freq-start) // recipe.channel-width
         ms: '{recipe.outdir}/{recipe.prefix}.{recipe.duration:0.1f}h.{recipe.integration:.1f}s.ms'
@@ -75,6 +80,7 @@ mkpsim:
             cab: split-beam
             params:
                 outdir: 'beam_models'
+                beam_file: =recipe.beam-file
         create-empty-ms:
             info:  Make an empty measurement set with simms
             cab: simms
