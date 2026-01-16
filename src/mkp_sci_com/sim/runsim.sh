@@ -21,8 +21,11 @@ simms -dir "J2000,04h00m00.0s,-33d00m00s" -T meerkat\
 eidos -p 256 -d 4 -f 1300 1350 5 \
     -P beam_models/mk.eidos.lband -o8
 
-# Split holographic beam into meqtree format
-python scripts/split_beam.py --prefix=mkp.holo.lband --outdir=beam_models data/MK+L_sym.fits
+# Split holographic beam into meqtree format (call python function directly)
+python - <<'PY'
+from mkp_sci_com.utils import split_beam
+split_beam('data/MK+L_sym.fits', prefix='mkp.holo.lband', outdir='beam_models')
+PY
 
 # Run stimela
 stimela --backend singularity run cultcargo::meqtree-pipeliner \
