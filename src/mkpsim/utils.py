@@ -301,11 +301,12 @@ def plot_image(
     slices1: tuple = ("x", "y", 0, 0),
     img2: str | Path | None = None,
     slices2: tuple | None = None,
-    quantity: Literal["diff", "fraction"] = "diff",
+    quantity: Literal["diff", "fraction", "percent"] = "diff",
     figsize: tuple[int, int] = (6, 6),
     savepng: str | Path | None = None,
     imshow_kwargs: dict | None = None,
     cbar_kwargs: dict | None = None,
+    title: str | None = None,
 ):
     """Plot a FITS image with WCS projection.
 
@@ -320,8 +321,9 @@ def plot_image(
         Path to a second FITS file to plot the difference.
     slices2 : tuple, optional
         Data slices for the second image. Use slices1 if None.
-    quantity : "fraction" or "diff", optional
-        Whether to plot img1/img2 ("fraction") or img1-img2 ("diff"). 
+    quantity : "diff", "fraction" or "percent" optional
+        Whether to plot img1-img2 ("diff"), img1/img2 ("fraction")
+        or (img1 - img2) * 100 / img1 ("percent).
         Default "fraction". Only used if img2 is provided.
     figsize : tuple[int, int], optional
         Figure size (width, height) in inches, default (10, 10).
@@ -331,6 +333,8 @@ def plot_image(
         Additional keyword arguments to pass to ax.imshow().
     cbar_kwargs : dict, optional
         Additional keyword arguments to pass to fig.colorbar().
+    title : str
+        Figure title
     Returns
     -------
     tuple
@@ -348,6 +352,8 @@ def plot_image(
         data2 = fits.getdata(img2, 0)[data2_slices]
         if quantity == "fraction":
             data_plot = data1 / data2
+        elif quantity == "percent":
+            data_plot = (data1 - data2) * 100 / data1
         else:
             data_plot = data1 - data2
     else:
@@ -367,6 +373,9 @@ def plot_image(
     ax.set_xlabel("Right Ascension")
     ax.set_ylabel("Declination")
     fig.colorbar(im, ax=ax, **cbar_kwargs or {})
+
+    if title is not None:
+        fig.suptitle(title)
 
     if savepng is not None:
         savepng = Path(savepng)
