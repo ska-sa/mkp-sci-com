@@ -47,5 +47,4 @@ log*.txt
 build/lib/
 
 # Egg-info generated in source
-src/*.egg-info/
 *.egg-info/
