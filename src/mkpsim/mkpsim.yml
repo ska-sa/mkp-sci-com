@@ -33,7 +33,7 @@ mkpsim:
         array:
             info: Array type, either "hetero" or "homo"
             dtype: str
-            default: heterogenous
+            default: hetero
         prefix:
             info: Prefix of the output files.
             dtype: str
@@ -77,7 +77,7 @@ mkpsim:
     assign:
         beam-dir: '{recipe.outdir}/beams'
         nchannel: =(recipe.freq-end - recipe.freq-start) // recipe.channel-width
-        ms: '{recipe.outdir}/{recipe.prefix}.{recipe.duration:0.1f}h.{recipe.integration:.1f}s.ms'
+        ms: '{recipe.outdir}/{recipe.prefix}.ms'
         log.dir: '{recipe.outdir}/logs/log-{config.run.datetime}'          # put logs into output dir
     steps:
         mkdir:
