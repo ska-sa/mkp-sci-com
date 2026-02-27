@@ -1,0 +1,17 @@
+[sim]
+me.e_enable = 1
+me.e_module = Siamese_OMS_pybeams_fits
+me.l_module = Rotation
+me.sky.tiggerskymodel = 1
+me.z_module = Siamese_OMS_oms_ionosphere
+ms_sel.ddid_index = 0
+ms_sel.field_index = 0
+ms_sel.ms_channel_end = 0
+ms_sel.ms_channel_start = 0
+ms_sel.ms_channel_step = 1
+ms_sel.ms_corr_sel = 4
+ms_sel.ms_polarization = XX YY XY YX
+pybeams_fits.missing_is_null = 0
+pybeams_fits.normalize_gains = 1
+pybeams_fits.sky_rotation = 1  
+pybeams_fits.verbose_level = 1

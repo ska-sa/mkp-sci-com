@@ -1,0 +1,9 @@
+{
+    "lband": {
+            "patterns": {
+                    "cmd::default": "beam-path/mk.eidos.lband_$(corr)_$(reim).fits",
+                    "mkp": "beam-path/mkp.holo.lband.$(corr)_$(reim).fits"
+            },
+            "define-stationtypes": { }
+    }
+}

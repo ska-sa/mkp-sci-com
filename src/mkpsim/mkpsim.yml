@@ -1,0 +1,151 @@
+_include:
+    - (cultcargo)wsclean.yml
+    - (cultcargo)meqtree-pipeliner.yml
+    - (mkpsim)custom-cabs.yml
+
+mkpsim:
+    info: Stimela recipe for MeerKAT+ simulation
+    inputs:
+        outdir:
+            info: Output directory. Will be created if not exist.
+            dtype: Directory
+            required: true
+        skymodel:
+            info: Source catalog file.
+            dtype: File
+            required: true
+        mkp-beam-file:
+            info: MeerKAT+ beam FITS file.
+            dtype: File
+            required: true
+        antpos:
+            info: Antenna position file.
+            dtype: File
+            required: true
+        sim-config:
+            info: meqtree configuration file.
+            dtype: File
+            required: true
+        ncpus:
+            info: Number of CPUs to use for meqtree-pipeliner.
+            dtype: int
+            default: 8
+        array:
+            info: Array type, either "hetero" or "homo"
+            dtype: str
+            default: hetero
+        prefix:
+            info: Prefix of the output files.
+            dtype: str
+            default: mkp.sim
+        direction:
+            info: Pointing direction. Example J2000,0h0m0s,-30d0m0s.
+            dtype: str
+            default: J2000,04h00m00.0s,-33d00m00s
+        freq-start:
+            info: Start frequency in MHz.
+            dtype: float
+            default: 1300
+        freq-end:
+            info: End frequency in MHz.
+            dtype: float
+            default: 1305
+        channel-width:
+            info: Channel width in MHz.
+            dtype: float
+            default: 0.208984
+        duration:
+            info: Observation duration hours. Default is 0.1.
+            dtype: float
+            default: 0.1
+        integration:
+            info: Integration time in seconds. Default is 4.
+            dtype: float
+            default: 4.0
+        imsize:
+            info: Size of the quick image.
+            dtype: int
+            default: 1024
+        imscale:
+            info: Resolution of the quick image.
+            dtype: str
+            default: 0.01deg
+        primary-beam-enable:
+            info: Apply primary beam to sky model.
+            dtype: bool
+            default: true
+    assign:
+        beam-dir: '{recipe.outdir}/beams'
+        nchannel: =(recipe.freq-end - recipe.freq-start) // recipe.channel-width
+        ms: '{recipe.outdir}/{recipe.prefix}.ms'
+        log.dir: '{recipe.outdir}/logs/log-{config.run.datetime}'          # put logs into output dir
+    steps:
+        mkdir:
+            info: Create output directory if it does not exist.
+            cab: mkdir
+            params:
+                dir: =recipe.beam-dir
+        make-meerkat-beam:
+            info: Make MeerKAT beam models with eidos
+            cab: eidos
+            params:
+                prefix: '{recipe.beam-dir}/mk.eidos.lband'
+                freq: =LIST(recipe.freq-start, recipe.freq-end, recipe.channel-width)
+        split-mkp-beam:
+            info: Split MeerKAT+ holographic beam into 8 complex voltage beams
+            cab: split-beam
+            params:
+                outdir: =recipe.beam-dir
+                beam_file: =recipe.mkp-beam-file
+        create-empty-ms:
+            info:  Make an empty measurement set with simms
+            cab: simms
+            params:
+                pos: =recipe.antpos
+                direction: =recipe.direction
+                name: =recipe.ms
+                synthesis-time: =recipe.duration
+                dtime: =recipe.integration
+                nchan: =recipe.nchannel
+                freq0: '{recipe.freq-start}MHz'
+                dfreq: '{recipe.channel-width}MHz'
+        generate-stationspec:
+            info: Generate stationspec JSON file
+            cab: generate-stationspec
+            params:
+                beam_path: =recipe.beam-dir
+                output_dir: =recipe.outdir
+                array: =recipe.array 
+        simulate-vis:
+            info: Simulate visibility with meqtree-pipeliner
+            cab: meqsim
+            params:
+                ms: =recipe.ms
+                skymodel: =recipe.skymodel
+                mt: =recipe.ncpus
+                config: =IFSET(recipe.sim-config)
+                column: CORRECTED_DATA
+                primary-beam-enable: =recipe.primary-beam-enable
+                primary-beam-pa-rotation: =IFSET(recipe.primary-beam-enable, true, false)
+                primary-beam-path-pattern: =IFSET('{recipe.outdir}/stationspec_{recipe.array}.json')
+                primary-beam-l-axis: px                                                                                                                                         
+                primary-beam-m-axis: py
+        quick-image:
+            info: Make quick image with wsclean
+            cab: wsclean
+            params:
+                ms: =recipe.ms
+                prefix: '{recipe.outdir}/{recipe.prefix}'
+                size: =recipe.imsize
+                scale: =recipe.imscale
+                niter: 1
+                column: CORRECTED_DATA
+
+
+opts:
+    backend:
+        select:
+            - native
+            - singularity
+        native:
+            virtual_env: ~/venv/mkpsim

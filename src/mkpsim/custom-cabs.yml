@@ -1,0 +1,153 @@
+cabs:
+    simms:
+        info: Create an empty measurement set with simms (https://github.com/ratt-ru/simms)
+        name: simms
+        command: simms
+        policies:
+            prefix: "--"
+        inputs:
+            pos:
+                info: Antenna position file
+                dtype: File
+                required: true
+                policies:
+                    positional: true
+            direction:
+                info: Pointing direction. Example J2000,0h0m0s,-30d0m0s.
+                dtype: str
+            freq0:
+                info:  Start frequency with unit, e.g. 800MHz
+                dtype: str
+            dfreq:
+                info: Channel width with unit, e.g. 208k.984kHz.
+                dtype: str
+            synthesis-time:
+                info: Synthesis time in hours. Default is 0.1
+                dtype: float
+                default: 0.1
+            dtime:
+                info: Integration time in seconds. Default is 8
+                dtype: float
+                default: 8.0
+            nchan:
+                info: Number of frequency channels. Default is 5
+                dtype: int
+                default: 5
+            pol:
+                info: Polarization. Default is XX XY YX YY
+                dtype: str
+                default: XX XY YX YY
+            type:
+                info: position list type
+                dtype: str
+                choices: [ascii, casa]
+                default: ascii
+            coord-sys:
+                info: 
+                    Only relevent when --type=ascii. Coordinate system of antenna positions. 
+                    Default is itrf.
+                dtype: str
+                choices: [itrf, enu, wgs84]
+                default: itrf
+            tel:
+                info: Telescope name. Required by CASA for lat/lon info, so using MeerKAT
+                dtype: str
+                default: meerkat
+            name:
+                info: MS name. A name based on the observatoion will be generated otherwise.
+                dtype: str
+    
+    mkdir:
+        info: Create a directory if it does not exist.
+        name: mkdir
+        command: mkdir -p
+        inputs:
+            dir:
+                info: Directory to create
+                dtype: str
+                policies:
+                    positional: true
+    eidos:
+        info: 
+            Generate MeerKAT primary beam model, specially defaulting to output
+            8 complex voltage beams for meqtree simulation.
+        name: eidos 
+        command: eidos
+        policies:
+            prefix: "--"
+        inputs:
+            prefix:
+                info: prefix of the output beam files, including path
+                dtype: str
+            freq:
+                info: Start, end freqs, and channel width in MHz
+                dtype: List[float]
+                policies:
+                    repeat: list
+            pixels:
+                info: Number of pixels on one side of the beam map
+                dtype: int
+                default: 256
+            diameter:
+                info: Angular diameter of the beam in degree
+                dtype: float
+                default: 5
+            output-eight:
+                info: Output 8 complex voltage beam files
+                dtype: bool
+                default: true
+    
+    split-beam:
+        info: Split holography beam into 8 complex voltage beams
+        name: split-beam
+        flavour:
+            kind: python
+        command: mkpsim.utils.split_beam
+        inputs:
+            outdir:
+                dtype: Directory
+            prefix:
+                dtype: str
+                default: mkp.holo.lband
+            beam_file:
+                dtype: File
+                policies:
+                    positional: true
+                required: true
+    
+    generate-stationspec:
+        info: Generate the station specification JSON file for meqsim
+        name: generate-stationspec
+        flavour:
+            kind: python
+        command: mkpsim.utils.generate_stationspec
+        inputs:
+            beam_path:
+                info: Path to the directory containing the beam files.
+                dtype: Directory
+            output_dir:
+                info: Output directory to write stationspec.
+                dtype: Directory
+            array:
+                info: Specify \'hetero' or \'homo' array type
+                dtype: str
+        outputs:
+            stationspec:
+                info: The generated stationspec JSON file.
+                dtype: File
+        
+
+    meqsim:
+        backend:
+            select:
+                singularity
+            singularity:
+                auto_build: true
+    
+    wsclean:
+        backend:
+            select:
+                singularity
+            singularity:
+                auto_build: true
+  

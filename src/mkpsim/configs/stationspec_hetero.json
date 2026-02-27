@@ -1,0 +1,23 @@
+{
+    "lband": {
+            "patterns": {
+                    "cmd::default": "beam-path/mk.eidos.lband_$(corr)_$(reim).fits",
+                    "mkp": "beam-path/mkp.holo.lband.$(corr)_$(reim).fits"
+            },
+            "define-stationtypes": {
+                    "e017": "mkp",
+                    "e026": "mkp",
+                    "e031": "mkp",
+                    "e060": "mkp",
+                    "e105": "mkp",
+                    "e107": "mkp",
+                    "e110": "mkp",
+                    "e111": "mkp",
+                    "e115": "mkp",
+                    "e116": "mkp",
+                    "e118": "mkp",
+                    "e119": "mkp",
+                    "e121": "mkp"
+            }
+    }
+}

@@ -1,0 +1,50 @@
+# Build artifacts
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env
+.envs/
+
+# Test and coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Type checking
+.mypy_cache/
+
+# Wheels and eggs
+*.whl
+*.egg
+
+# Jupyter
+.ipynb_checkpoints
+
+# Logs, data and large files
+*.ms/
+*.fits
+*.log
+*.npz
+stimela.*
+log*.txt
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Local build outputs
+build/lib/
+
+# Egg-info generated in source
+*.egg-info/

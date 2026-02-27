@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling>=1.16"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mkp-sci-com"
+version = "0.0.1"
+description = "MeerKAT Extension science commissioning tools"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    {name = "Piyanat Kittiwisit", email = "pkittiwisit@sarao.ac.za"},
+    {name = "Sean Passmoor", email = "sean@sarao.ac.za"},
+]
+dependencies = [
+    "numpy<2.4",  # for eidos, see https://github.com/ratt-ru/eidos/issues/32
+    "stimela",
+    "cult-cargo",
+    "simms",
+    "eidos",
+    "casaconfig",
+    "casadata",
+    "casatasks",
+    "casatools",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff"
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/mkpsim/",
+  "CorrelatorTests/",
+]
+sources = ["src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mkpsim"]

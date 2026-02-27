@@ -1,0 +1,2 @@
+#format: ra_h ra_m ra_s dec_d dec_m dec_s i
+04 00 00.0 -33 00 30.0 1.0
